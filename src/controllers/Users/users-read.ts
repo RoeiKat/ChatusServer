@@ -35,7 +35,7 @@ export const loginUser: RequestHandler = function (req, res, next) {
 };
 
 export const checkTakenUserName: RequestHandler = function (req, res, next) {
-  const { username } = req.body;
+  const { username } = req.query;
   User.findOne()
     .where("username")
     .equals(username)
@@ -44,6 +44,23 @@ export const checkTakenUserName: RequestHandler = function (req, res, next) {
         res.status(302).json({ message: "Username taken" });
       } else {
         res.status(200).json({ message: "Username available" });
+      }
+    })
+    .catch((error) => {
+      next(error);
+    });
+};
+
+export const checkTakenEmail: RequestHandler = function (req, res, next) {
+  const { email } = req.query;
+  User.findOne()
+    .where("email")
+    .equals(email)
+    .then((foundUser) => {
+      if (foundUser) {
+        res.status(302).json({ message: "Email taken" });
+      } else {
+        res.status(200).json({ message: "Email available" });
       }
     })
     .catch((error) => {

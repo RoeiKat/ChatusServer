@@ -10,11 +10,19 @@ import { connectDB } from "./util/database";
 import { connectSocket } from "./util/connectSocket";
 import { errorHandler } from "./util/errorHandler";
 
+import chatRoutes from "./routes/chat.routes";
+import userRoutes from "./routes/user.routes";
+import { searchUser } from "./controllers/Users/users-read";
+
 const app = express();
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(express.json({ limit: "50mb" }));
 app.use(cors());
+
+app.get("/search", searchUser);
+app.use("/user", userRoutes);
+app.use("/chat", chatRoutes);
 
 app.use(errorHandler);
 
