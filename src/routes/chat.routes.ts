@@ -10,15 +10,18 @@ const router = Router();
 //Gets all conversations
 router.get("/", authCheck, getUserConversations);
 
-// Gets the conversation messages
-router.get("/:conversationId", authCheck, getMessages);
-
 // Uploads a new message
 router.post(
   "/",
-  body("message", "Message cannot be null!").not().isEmpty(),
+  [
+    body("message", "Message cannot be null!").not().isEmpty(),
+    body("to", "No reciever provided").not().isEmpty(),
+  ],
   authCheck,
   createMessage
 );
+
+// Gets the conversation messages
+router.get("/:conversationId", authCheck, getMessages);
 
 export default Router;
