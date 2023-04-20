@@ -36,6 +36,11 @@ export const loginUser: RequestHandler = function (req, res, next) {
 
 export const checkTakenUserName: RequestHandler = function (req, res, next) {
   const { username } = req.query;
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.status(206).json({ message: "No valid username" });
+    return;
+  }
   User.findOne()
     .where("username")
     .equals(username)
@@ -53,6 +58,11 @@ export const checkTakenUserName: RequestHandler = function (req, res, next) {
 
 export const checkTakenEmail: RequestHandler = function (req, res, next) {
   const { email } = req.query;
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.status(206).json({ message: "No valid email" });
+    return;
+  }
   User.findOne()
     .where("email")
     .equals(email)

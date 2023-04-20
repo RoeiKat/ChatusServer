@@ -8,6 +8,10 @@ const conversationSchema = new Schema<IConversation>(
     messages: [
       { type: Schema.Types.ObjectId, ref: "Messages", required: true },
     ],
+    notifications: {
+      type: Number,
+      required: true,
+    },
   },
   { timestamps: true }
 );

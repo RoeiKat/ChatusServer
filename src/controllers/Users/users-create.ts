@@ -15,7 +15,7 @@ export const createUser: RequestHandler = function (req, res, next) {
     .then((hashedPass) => {
       return User.create({
         email,
-        hashedPass,
+        password: hashedPass,
         username,
         avatar,
         conversations: [],

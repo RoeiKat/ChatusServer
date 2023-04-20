@@ -15,13 +15,20 @@ import userRoutes from "./routes/user.routes";
 import { searchUser } from "./controllers/Users/users-read";
 
 const app = express();
+
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
-app.use(express.json({ limit: "50mb" }));
+app.use(express.json());
 app.use(cors());
 
+app.get("/", (req, res, next) => {
+  res.status(200).json({ message: "Connected" });
+});
+
 app.get("/search", searchUser);
+
 app.use("/user", userRoutes);
+
 app.use("/chat", chatRoutes);
 
 app.use(errorHandler);

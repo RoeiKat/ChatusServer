@@ -24,4 +24,4 @@ router.post(
 // Gets the conversation messages
 router.get("/:conversationId", authCheck, getMessages);
 
-export default Router;
+export default router;

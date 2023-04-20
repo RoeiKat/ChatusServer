@@ -6,9 +6,11 @@ import { Message } from "../../../models/Message.model";
 import { Conversation } from "../../../models/Conversation.model";
 import { IConversation } from "../../../interfaces/Conversation.interface";
 import { getIO } from "../../../util/connectSocket";
+import { IUser } from "../../../interfaces/User.interface";
 
 export const createMessage: RequestHandler = function (req, res, next) {
   let conversation: IConversation;
+  let recieverUser: IUser;
   const senderId: string = res.locals.jwt.id;
   const recieverId: string = req.body.to;
   const { message } = req.body;
@@ -22,6 +24,11 @@ export const createMessage: RequestHandler = function (req, res, next) {
     .then((foundUsers) => {
       if (foundUsers.length !== 2)
         throw new HTMLError("Non-existing user id's", 403);
+      if (foundUsers[0]._id.toString() === recieverId) {
+        recieverUser = foundUsers[0];
+      } else {
+        recieverUser = foundUsers[1];
+      }
       return Conversation.findOne()
         .where("initUser")
         .equals([senderId, recieverId])
@@ -34,11 +41,12 @@ export const createMessage: RequestHandler = function (req, res, next) {
           initUser: senderId,
           otherUser: recieverId,
           messages: [],
+          notifications: 0,
         })
           .then((newConversation) => {
             conversation = newConversation;
             const io = getIO();
-            io.emit("newConversation", {
+            io.emit("newConversationEvent", {
               initUser: senderId,
               otherUser: recieverId,
             });
@@ -65,12 +73,14 @@ export const createMessage: RequestHandler = function (req, res, next) {
     })
     .then((createMessage) => {
       conversation.messages.push(createMessage);
+      conversation.notifications += 1;
       return conversation.save();
     })
     .then((savedConversation) => {
       const io = getIO();
-      io.emit("newMessage", { id: savedConversation._id! });
+      io.emit("newMessageEvent", { id: savedConversation._id! });
       res.status(201).json({ message: "Created message successfully" });
+      // recieverUser.conversations.sort(conversation => )
     })
     .catch((error) => {
       next(error);

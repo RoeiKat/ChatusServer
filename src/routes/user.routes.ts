@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { body } from "express-validator";
+import { body, query } from "express-validator";
 import {
   checkTakenEmail,
   checkTakenUserName,
@@ -17,9 +17,10 @@ router.post(
   "/register",
   [
     body("email", "Please enter a valid email").isEmail().normalizeEmail(),
-    body("password", "Invalid password, 8-16 char long and alphanumeric")
-      .isLength({ min: 8, max: 16 })
-      .isAlphanumeric(),
+    body(
+      "password",
+      "Invalid password, 8-16 char long and alphanumeric"
+    ).isLength({ min: 8, max: 16 }),
     body("confirmPassword").custom((value, { req }) => {
       if (value !== req.body.password) {
         throw new Error("Confirm pass isnt matching");
@@ -32,9 +33,17 @@ router.post(
 );
 
 // Checks if email is taken
-router.get("/check-email", checkTakenEmail);
+router.get(
+  "/check-email",
+  query("email").isEmail().normalizeEmail(),
+  checkTakenEmail
+);
 
 // Checks if username is taken
-router.get("/check-username", checkTakenUserName);
+router.get(
+  "/check-username",
+  query("username").isLength({ min: 5 }),
+  checkTakenUserName
+);
 
-export default Router;
+export default router;

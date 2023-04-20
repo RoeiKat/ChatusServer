@@ -1,6 +1,7 @@
 import { RequestHandler } from "express";
 import { HTMLError } from "../../../util/errorHandler";
 import { Conversation } from "../../../models/Conversation.model";
+import { getIO } from "../../../util/connectSocket";
 
 export const getMessages: RequestHandler = function (req, res, next) {
   const { conversationId } = req.params;
@@ -29,6 +30,15 @@ export const getMessages: RequestHandler = function (req, res, next) {
       )
         throw new HTMLError("Forbidden", 403);
       res.status(200).json({ messages: foundConversation.messages });
+      foundConversation.notifications = 0;
+      return foundConversation.save();
+    })
+    .then((savedConversation) => {
+      const io = getIO();
+      io.emit("newConversationEvent", {
+        initUser: savedConversation.initUser._id!,
+        otherUser: savedConversation.otherUser._id!,
+      });
     })
     .catch((error) => {
       next(error);

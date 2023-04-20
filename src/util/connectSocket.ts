@@ -15,8 +15,8 @@ interface ClientToServerEvents {
 interface InterServerEvents {
   ping: () => void;
   getUsers: (data: any) => void;
-  newConversation: (data: { initUser: string; otherUser: string }) => void;
-  newMessage: (data: { id: string }) => void;
+  newConversationEvent: (data: { initUser: string; otherUser: string }) => void;
+  newMessageEvent: (data: { id: string }) => void;
 }
 
 interface SocketData {
