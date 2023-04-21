@@ -27,7 +27,12 @@ export const loginUser: RequestHandler = function (req, res, next) {
       if (!comparisonResults)
         throw new HTMLError("Invalid email or password", 401);
       const token = signJWT(user);
-      res.status(200).json({ token: token, userId: user._id!.toString });
+      res.status(200).json({
+        token: token,
+        userId: user._id,
+        color: user.color,
+        username: user.username,
+      });
     })
     .catch((error) => {
       next(error);

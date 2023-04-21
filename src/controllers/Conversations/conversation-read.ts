@@ -9,6 +9,13 @@ export const getUserConversations: RequestHandler = function (req, res, next) {
   })
     .populate("initUser", "_id username color")
     .populate("otherUser", "_id username color")
+    .populate({
+      path: "messages",
+      populate: {
+        path: "sender",
+        select: "_id username color",
+      },
+    })
     .then((foundConversations) => {
       if (!foundConversations) {
         return res.status(304).json({ message: "No found conversations" });
