@@ -5,7 +5,7 @@ import { User } from "../../models/User.model";
 import { validationResult } from "express-validator";
 
 export const createUser: RequestHandler = function (req, res, next) {
-  const { username, email, password, avatar } = req.body;
+  const { username, email, password, color } = req.body;
   const errors: any = validationResult(req);
   if (!errors.isEmpty()) {
     throw new HTMLError(errors.errors[0].msg, 422);
@@ -17,7 +17,7 @@ export const createUser: RequestHandler = function (req, res, next) {
         email,
         password: hashedPass,
         username,
-        avatar,
+        color,
         conversations: [],
       });
     })

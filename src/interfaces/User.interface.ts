@@ -5,7 +5,7 @@ export interface IUser {
   email: string;
   username: string;
   password: string;
-  avatar?: string;
+  color?: string;
   conversations: IConversation[];
   createdAt: string;
 }

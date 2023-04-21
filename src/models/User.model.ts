@@ -17,7 +17,7 @@ const userSchema = new Schema<IUser>(
       required: true,
       unique: true,
     },
-    avatar: String,
+    color: String,
     conversations: [
       { type: Schema.Types.ObjectId, ref: "Conversations", required: true },
     ],
