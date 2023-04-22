@@ -86,7 +86,7 @@ export const checkTakenEmail: RequestHandler = function (req, res, next) {
 export const searchUser: RequestHandler = function (req, res, next) {
   const { query } = req.query;
   const tokenId = res.locals.jwt.id;
-  User.find({ username: { $regex: query } })
+  User.find({ username: { $regex: query, $options: "i" } })
     .then((foundUsers) => {
       if (!foundUsers) {
         res.status(302).json({ message: "No found users" });

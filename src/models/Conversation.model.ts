@@ -3,15 +3,17 @@ import { IConversation } from "../interfaces/Conversation.interface";
 
 const conversationSchema = new Schema<IConversation>(
   {
-    initUser: { type: Schema.Types.ObjectId, ref: "Users", required: true },
-    otherUser: { type: Schema.Types.ObjectId, ref: "Users", required: true },
+    initUser: {
+      user: { type: Schema.Types.ObjectId, ref: "Users", required: true },
+      notifications: Number,
+    },
+    otherUser: {
+      user: { type: Schema.Types.ObjectId, ref: "Users", required: true },
+      notifications: Number,
+    },
     messages: [
       { type: Schema.Types.ObjectId, ref: "Messages", required: true },
     ],
-    notifications: {
-      type: Number,
-      required: true,
-    },
   },
   { timestamps: true }
 );

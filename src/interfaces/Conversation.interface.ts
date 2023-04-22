@@ -3,10 +3,9 @@ import { IUser } from "./User.interface";
 
 export interface IConversation {
   _id?: string;
-  initUser: IUser;
-  otherUser: IUser;
+  initUser: { user: IUser; notifications: number };
+  otherUser: { user: IUser; notifications: number };
   messages: IMessage[];
   createdAt: string;
-  notifications: number;
   save: () => IConversation;
 }

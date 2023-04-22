@@ -5,10 +5,22 @@ import { Types } from "mongoose";
 export const getUserConversations: RequestHandler = function (req, res, next) {
   const tokenId = res.locals.jwt.id;
   Conversation.find({
-    $or: [{ initUser: tokenId }, { otherUser: tokenId }],
+    $or: [{ "initUser.user": tokenId }, { "otherUser.user": tokenId }],
   })
-    .populate("initUser", "_id username color")
-    .populate("otherUser", "_id username color")
+    .populate({
+      path: "initUser",
+      populate: {
+        path: "user",
+        select: "_id username color ",
+      },
+    })
+    .populate({
+      path: "otherUser",
+      populate: {
+        path: "user",
+        select: "_id username color",
+      },
+    })
     .populate({
       path: "messages",
       populate: {

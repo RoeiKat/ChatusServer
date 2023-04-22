@@ -30,18 +30,17 @@ export const createMessage: RequestHandler = function (req, res, next) {
         recieverUser = foundUsers[1];
       }
       return Conversation.findOne()
-        .where("initUser")
+        .where("initUser.user")
         .equals([senderId, recieverId])
-        .where("otherUser")
+        .where("otherUser.user")
         .equals([senderId, recieverId]);
     })
     .then((foundConversation) => {
       if (!foundConversation) {
         return Conversation.create({
-          initUser: senderId,
-          otherUser: recieverId,
+          initUser: { user: senderId, notifications: 0 },
+          otherUser: { user: recieverId, notifications: 0 },
           messages: [],
-          notifications: 0,
         })
           .then((newConversation) => {
             conversation = newConversation;
@@ -73,13 +72,47 @@ export const createMessage: RequestHandler = function (req, res, next) {
     })
     .then((createMessage) => {
       conversation.messages.push(createMessage);
-      conversation.notifications += 1;
+      if (conversation.initUser.user._id === senderId) {
+        conversation.otherUser.notifications += 1;
+      } else {
+        conversation.initUser.notifications += 1;
+      }
       return conversation.save();
     })
     .then((savedConversation) => {
+      return Conversation.findById(savedConversation._id)
+        .populate({
+          path: "initUser",
+          populate: {
+            path: "user",
+            select: "_id username color",
+          },
+        })
+        .populate({
+          path: "otherUser",
+          populate: {
+            path: "user",
+            select: "_id username color",
+          },
+        })
+        .populate({
+          path: "messages",
+          populate: {
+            path: "sender",
+            select: "_id username color",
+          },
+        });
+    })
+    .then((populatedConversation) => {
       const io = getIO();
-      io.emit("newMessageEvent", { id: savedConversation._id! });
-      res.status(201).json({ message: "Created message successfully" });
+      io.emit("newMessageEvent", {
+        recieverId: recieverId,
+        senderId: senderId,
+      });
+      res.status(201).json({
+        message: "Created message successfully",
+        conversation: populatedConversation,
+      });
     })
     .catch((error) => {
       next(error);
