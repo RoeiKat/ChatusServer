@@ -9,6 +9,7 @@ if (process.env.NODE_ENV !== "production") {
 import { connectDB } from "./util/database";
 import { connectSocket } from "./util/connectSocket";
 import { errorHandler } from "./util/errorHandler";
+import { authCheck } from "./middleware/authCheck";
 
 import chatRoutes from "./routes/chat.routes";
 import userRoutes from "./routes/user.routes";
@@ -25,11 +26,11 @@ app.get("/", (req, res, next) => {
   res.status(200).json({ message: "Connected" });
 });
 
-app.get("/search", searchUser);
-
 app.use("/user", userRoutes);
 
 app.use("/chat", chatRoutes);
+
+app.get("/search", authCheck, searchUser);
 
 app.use(errorHandler);
 

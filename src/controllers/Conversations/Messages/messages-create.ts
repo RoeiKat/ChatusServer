@@ -80,7 +80,6 @@ export const createMessage: RequestHandler = function (req, res, next) {
       const io = getIO();
       io.emit("newMessageEvent", { id: savedConversation._id! });
       res.status(201).json({ message: "Created message successfully" });
-      // recieverUser.conversations.sort(conversation => )
     })
     .catch((error) => {
       next(error);

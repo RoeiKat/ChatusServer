@@ -16,6 +16,7 @@ export const getUserConversations: RequestHandler = function (req, res, next) {
         select: "_id username color",
       },
     })
+    .sort([["updatedAt", "descending"]])
     .then((foundConversations) => {
       if (!foundConversations) {
         return res.status(304).json({ message: "No found conversations" });
