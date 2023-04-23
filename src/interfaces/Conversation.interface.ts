@@ -7,5 +7,5 @@ export interface IConversation {
   otherUser: { user: IUser; notifications: number };
   messages: IMessage[];
   createdAt: string;
-  save: () => IConversation;
+  save: (arg?: any) => IConversation;
 }
