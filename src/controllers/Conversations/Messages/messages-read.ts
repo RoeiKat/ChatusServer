@@ -33,10 +33,11 @@ export const getMessages: RequestHandler = function (req, res, next) {
       )
         throw new HTMLError("Forbidden", 403);
       res.status(200).json({ messages: foundConversation.messages });
-      if (foundConversation.initUser.user._id === tokenId) {
-        foundConversation.initUser.notifications = 0;
-      } else {
+      console.log(foundConversation.initUser.user._id?.toString() === tokenId);
+      if (foundConversation.initUser.user._id?.toString() === tokenId) {
         foundConversation.otherUser.notifications = 0;
+      } else {
+        foundConversation.initUser.notifications = 0;
       }
       return foundConversation.save();
     })

@@ -72,7 +72,8 @@ export const createMessage: RequestHandler = function (req, res, next) {
     })
     .then((createMessage) => {
       conversation.messages.push(createMessage);
-      if (conversation.initUser.user._id === senderId) {
+      console.log(conversation.initUser.user._id?.toString() === senderId);
+      if (conversation.initUser.user._id?.toString() === senderId) {
         conversation.otherUser.notifications += 1;
       } else {
         conversation.initUser.notifications += 1;
