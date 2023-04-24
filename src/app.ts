@@ -18,7 +18,12 @@ import { searchUser } from "./controllers/Users/users-read";
 
 const app = express();
 
-app.use(morgan("dev"));
+if (process.env.NODE_ENV !== "production") {
+  app.use(morgan("dev"));
+} else {
+  app.use(morgan("combined"));
+}
+
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(express.json());
 app.use(cors(corsOptions));
