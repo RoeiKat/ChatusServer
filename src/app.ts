@@ -10,6 +10,7 @@ import { connectDB } from "./util/database";
 import { connectSocket } from "./util/connectSocket";
 import { errorHandler } from "./util/errorHandler";
 import { authCheck } from "./middleware/authCheck";
+import { corsOptions } from "./config/corsOptions";
 
 import chatRoutes from "./routes/chat.routes";
 import userRoutes from "./routes/user.routes";
@@ -20,7 +21,7 @@ const app = express();
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(express.json());
-app.use(cors());
+app.use(cors(corsOptions));
 
 app.get("/", (req, res, next) => {
   res.status(200).json({ message: "Connected" });
